@@ -53,7 +53,7 @@
 @endsection
 @section('body')
     <div class="container fill-height">
-        <scrum :scrum-data="{{ $scrum_data }}" scrum-url="{{ $scrum_url }}"></scrum>
+        <scrum :scrum-data="{{ $scrum_data }}" scrum-url="{{ $scrum_url }}" scrum-name="{{ $scrum_name }}"></scrum>
     </div>
 @endsection
 @section('footer')
