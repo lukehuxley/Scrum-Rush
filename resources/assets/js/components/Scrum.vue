@@ -19,7 +19,7 @@
                     <h4><i class="fa fa-spin fa-spinner"></i> Waiting for the scrum to start</h4>
                     <p>While waiting for the scrum to start you can invite people to come and vote on this scrum by providing them the following link:</p>
                     <blockquote>
-                        <a :href="scrumUrl">{{ scrumName }}</a>
+                        <a :href="scrumUrl">Scrum Rush: {{ scrumName }}</a>
                     </blockquote>
                     <p>New voters can join at any time during the scrum.</p>
                 </div>

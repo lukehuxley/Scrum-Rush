@@ -24,7 +24,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Invite people to come and vote on this scrum by providing them the following link:</p>
-                    <blockquote><a href="{{ $scrum_url }}">{{ $scrum_url }}</a></blockquote>
+                    <blockquote><a href="{{ $scrum_url }}">Scrum Rush: {{ $scrum_name }}</a></blockquote>
                     <p>New voters can join at any time.</p>
                 </div>
                 <div class="modal-footer">
