@@ -1,0 +1,19 @@
+#vote-buttons {
+
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+
+  .container & {
+    height: 100%;
+  }
+
+  [class*='col-'] {
+    padding:5px;
+    min-height: 50px;
+  }
+
+  .btn {
+    height: 100%;
+  }
+}

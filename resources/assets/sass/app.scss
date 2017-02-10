@@ -1,0 +1,41 @@
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
+@import "variables";
+
+// Bootstrap
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "bootswatch";
+
+@import "vote-buttons";
+@import "voter-chips";
+@import "flex";
+
+html, body {
+
+  height: 100%;
+
+}
+
+body {
+
+  padding-top: 83px;
+
+}
+
+.navbar {
+
+  .navbar-toggle {
+    padding: 7px;
+    text-transform: uppercase;
+  }
+
+}
+
+#scrum-controls {
+  margin-bottom: 20px;
+}
+
+.section {
+  margin-top: 40px;
+}

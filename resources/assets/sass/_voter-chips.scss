@@ -1,0 +1,103 @@
+.voter-chip-grp {
+
+  position: relative;
+  display: inline-block;
+  border-radius: .25em;
+  cursor: default;
+  margin: 5px;
+
+  &.voter-default .voter-chip:first-child {
+    background: $label-default-bg;
+  }
+
+  &.voter-primary .voter-chip:first-child {
+    background: $label-primary-bg;
+  }
+
+  &.voter-success .voter-chip:first-child {
+    background: $label-success-bg;
+  }
+
+  &.voter-info .voter-chip:first-child {
+    background: $label-info-bg;
+  }
+
+  &.voter-warning .voter-chip:first-child {
+    background: darken($label-warning-bg, 8%);
+  }
+
+  &.voter-default .voter-chip:last-child {
+    background: darken($label-default-bg, 8%);
+  }
+
+  &.voter-primary .voter-chip:last-child {
+    background: darken($label-primary-bg, 8%);
+  }
+
+  &.voter-success .voter-chip:last-child {
+    background: darken($label-success-bg, 8%);
+  }
+
+  &.voter-info .voter-chip:last-child {
+    background: darken($label-info-bg, 8%);
+  }
+
+  &.voter-warning .voter-chip:last-child {
+    background: darken($label-warning-bg, 8%);
+  }
+
+  .voter-chip {
+
+    position: relative;
+    display: inline-block;
+    padding: .3em .6em .4em;
+    color: $label-color;
+    text-align: center;
+    white-space: nowrap;
+    float: left;
+    height: 30px;
+
+    .voter-chip-status {
+      position: relative;
+      float: left;
+      margin: 0;
+      width: 25px;
+      text-align: center;
+
+      .fa {
+        line-height: inherit;
+      }
+
+      .voter-chip & {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+    }
+
+    &:first-child {
+      border-radius: .25em;
+    }
+
+    &:last-child {
+      display: none;
+    }
+
+  }
+
+  &.voter-status {
+
+    .voter-chip:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .voter-chip:last-child {
+      display: inline-block;
+      border-top-right-radius: .25em;
+      border-bottom-right-radius: .25em;
+    }
+
+  }
+
+}
