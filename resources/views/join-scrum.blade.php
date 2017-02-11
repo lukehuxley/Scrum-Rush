@@ -1,12 +1,11 @@
 @extends('app')
-@section('header')
+@section('content')
     @include('navbar', [
         'title' => 'Scrum Rush'
     ])
-@endsection
-@section('body')
     <div class="container" id="app">
-        <h2>Joining {{ $scrum_name }}</h2>
+        @include('alert')
+        <h2>Joining {{ $scrum_name }} scrum</h2>
         <p>You are one step away from joining the {{ $scrum_name }} scrum.</p>
         <form class="form-horizontal" method="post">
             <div class="panel panel-primary">

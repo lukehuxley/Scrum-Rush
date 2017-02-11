@@ -1,5 +1,5 @@
 <template>
-    <div id="vote-buttons">
+    <div class="flex flex-grow flex-row flex-wrap vote-buttons">
         <vote-button disabled :height="rowHeight" @vote-was-cast="castVote(points)" v-for="points in buttons" :points="points"></vote-button>
     </div>
 </template>

@@ -1,7 +1,5 @@
 <template>
-    <div class="valign">
-        <h1 class="text-center massive">{{ voteResult }}</h1>
-    </div>
+    <h1 class="text-center massive">{{ voteResult }}</h1>
 </template>
 
 <script>
@@ -55,13 +53,9 @@
 </script>
 
 <style>
-    .valign {
-        position: relative;
-        top: 50%;
-        margin-top: -20px;
-        transform: translateY(-50%);
-    }
     .massive {
         font-size: 500%;
+        display: block;
+        width: 100%;
     }
 </style>

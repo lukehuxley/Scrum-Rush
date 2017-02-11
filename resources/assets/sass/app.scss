@@ -19,7 +19,7 @@ html, body {
 
 body {
 
-  padding-top: 83px;
+  padding-top: $body-navbar-padding;
 
 }
 
@@ -32,10 +32,64 @@ body {
 
 }
 
-#scrum-controls {
-  margin-bottom: 20px;
+.scrum-voter-vote {
+  position: absolute;
+  top: $body-navbar-padding;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+}
+
+.scrum-master-vote {
+  position: absolute;
+  top: $body-navbar-padding;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+}
+
+.scrum-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
 }
 
 .section {
   margin-top: 40px;
+}
+
+.fill-height {
+  height: 100%;
+}
+
+.fill-width {
+  width: 100%;
+}
+
+.vote-buttons {
+  margin: -10px;
+
+  .vote-button {
+    padding: 10px;
+    width: 0;
+
+    button {
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+      transition: all 0.4s;
+      border: none;
+      text-transform: uppercase;
+      display: block;
+      width: 100%;
+      border-radius: 3px;
+      font-size: 17px;
+      color: $btn-default-color;
+
+      &.btn-success {
+        color: $btn-success-color;
+      }
+
+    }
+
+  }
 }

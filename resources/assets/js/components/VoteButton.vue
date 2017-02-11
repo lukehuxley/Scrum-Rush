@@ -1,6 +1,6 @@
 <template>
-    <div class="col-xs-4" :style="{ height: buttonHeight }">
-        <button :disabled="disable" class="btn btn-block btn-lg" :class="{ 'btn-success': highlight, 'btn-default': ! highlight }" @click="castVote">{{ points }}</button>
+    <div class="flex flex-grow vote-button">
+        <button :disabled="disable" class="btn-vote" :class="{ 'btn-success': highlight, 'btn-default': ! highlight }" @click="castVote">{{ points }}</button>
     </div>
 </template>
 
@@ -26,3 +26,9 @@
         }
     }
 </script>
+
+<style>
+    .vote-button {
+        flex-basis: 33.3333%;
+    }
+</style>

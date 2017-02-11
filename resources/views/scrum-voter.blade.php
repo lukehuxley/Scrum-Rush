@@ -1,5 +1,5 @@
 @extends('app')
-@section('header')
+@section('content')
     @include('navbar', [
         'title' => $scrum_name.' - '.$voter_name,
         'menu' => [
@@ -50,9 +50,11 @@
             </div>
         </div>
     </div>
-@endsection
-@section('body')
-    <div class="container fill-height">
-        <scrum :scrum-data="{{ $scrum_data }}" scrum-url="{{ $scrum_url }}" scrum-name="{{ $scrum_name }}"></scrum>
+    <div id="app">
+        <div class="container scrum-voter-vote">
+            <div class="container fill-height">
+                <scrum :scrum-data="{{ $scrum_data }}" scrum-url="{{ $scrum_url }}" scrum-name="{{ $scrum_name }}"></scrum>
+            </div>
+        </div>
     </div>
 @endsection

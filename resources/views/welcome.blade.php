@@ -1,11 +1,10 @@
 @extends('app')
-@section('header')
+@section('content')
     @include('navbar', [
         'title' => 'Scrum Rush'
     ])
-@endsection
-@section('body')
     <div class="container" id="app">
+        @include('alert')
         <h2>Welcome</h2>
         <p>Voting on your story points has become much easier. You can create a scrum without need to sign up using the form below.</p>
         <div class="section">
