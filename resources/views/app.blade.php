@@ -8,12 +8,10 @@
 
         <link rel="stylesheet" href="{{ mix('css/app.css') }}"/>
         <link rel="stylesheet" href="{{ mix('css/font-awesome.css') }}"/>
-        <link rel="stylesheet" href="/css/shame.css"/>
     </head>
     <body>
         @yield('content')
         <script language="JavaScript" src="{{ mix('/js/app.js') }}"></script>
-        <script language="JavaScript" src="/js/shame.js"></script>
     </body>
 </html>
 
