@@ -12,7 +12,7 @@ Vue.component('scrum', require('./components/Scrum.vue'));
 Vue.component('scrum-voter', require('./components/ScrumVoter.vue'));
 Vue.component('scrum-voters', require('./components/ScrumVoters.vue'));
 Vue.component('vote-button', require('./components/VoteButton.vue'));
-Vue.component('scrum-vote', require('./components/ScrumVote.vue'));
+Vue.component('vote-buttons', require('./components/VoteButtons.vue'));
 Vue.component('round-results', require('./components/RoundResults.vue'));
 Vue.component('scrum-controls', require('./components/ScrumControls.vue'));
 

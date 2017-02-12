@@ -50,11 +50,7 @@
             </div>
         </div>
     </div>
-    <div id="app">
-        <div class="container scrum-voter-vote">
-            <div class="container fill-height">
-                <scrum :scrum-data="{{ $scrum_data }}" scrum-url="{{ $scrum_url }}" scrum-name="{{ $scrum_name }}"></scrum>
-            </div>
-        </div>
+    <div id="app" class="fill-height">
+        <scrum :scrum-data="{{ $scrum_data }}" scrum-url="{{ $scrum_url }}" scrum-name="{{ $scrum_name }}"></scrum>
     </div>
 @endsection

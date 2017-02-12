@@ -49,22 +49,13 @@ class Api extends Controller
                 $voter->vote_points($request->points);
         }
 
-        return response()->json($voter->points_vote);
+        return response()->json([
+            'request_response' => $voter->points_vote,
+            'scrum_status' => $this->scrumStatus($request)
+        ]);
     }
 
-    public function submitPriorityVote(Request $request)
-    {
-        $voter = Voter::where('session_id', $request->session()->getId())->first();
-
-        if ($request->priority == $voter->priority_vote)
-            $voter->vote_priority(null);
-        else
-            $voter->vote_priority($request->priority);
-
-        return response()->json($voter->priority_vote);
-    }
-
-    public function getScrumStatus(Request $request)
+    private function scrumStatus(Request $request)
     {
         $voter = Voter::where('session_id', $request->session()->getId());
 
@@ -96,13 +87,18 @@ class Api extends Controller
             ];
         }
 
-        return response()->json([
+        return [
             'round_open' => ($scrum->round_open) ? true : false,
             'voters' => $voters,
             'vote' => $voter->points_vote,
             'scale' => $scale,
             'scrum_started' => ($scrum->started) ? true : false
-        ]);
+        ];
+    }
+
+    public function getScrumStatus(Request $request)
+    {
+        return response()->json($this->scrumStatus($request));
     }
 
     public function startScrum(Request $request)
@@ -113,8 +109,7 @@ class Api extends Controller
         $scrum->start_new_round();
 
         return response()->json([
-            'scrum_started' => $scrum->started,
-            'round_open' => $scrum->round_open
+            'scrum_status' => $this->scrumStatus($request)
         ]);
     }
 
@@ -125,8 +120,7 @@ class Api extends Controller
         $scrum->start_new_round();
 
         return response()->json([
-            'scrum_started' => $scrum->started,
-            'round_open' => $scrum->round_open
+            'scrum_status' => $this->scrumStatus($request)
         ]);
     }
 
@@ -137,8 +131,7 @@ class Api extends Controller
         $scrum->end_round();
 
         return response()->json([
-            'scrum_started' => $scrum->started,
-            'round_open' => $scrum->round_open
+            'scrum_status' => $this->scrumStatus($request)
         ]);
     }
 

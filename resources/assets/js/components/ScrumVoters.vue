@@ -1,6 +1,6 @@
 <template>
     <div id="voters">
-        <scrum-voter v-for="voter in voters" :round-open="roundOpen" :name="voter.name" :show-status="showVoterStatus" :points="voter.points_vote" :voted="voter.voted" :uuid="voter.uuid"></scrum-voter>
+        <scrum-voter v-for="voter in voterData" :round-open="roundOpen" :name="voter.name" :show-status="showStatus" :points="voter.points_vote" :voted="voter.voted" :uuid="voter.uuid"></scrum-voter>
     </div>
 </template>
 
@@ -20,15 +20,9 @@
                 type: Boolean
             }
         },
-        data() {
-            return {
-                voters: this.voterData,
-                showVoterStatus: this.showStatus
-            }
-        },
         methods: {
             updateVoters() {
-                this.voters.forEach(function(voterData) {
+                this.voterData.forEach(function(voterData) {
                     this.$children.forEach(voterElem => {
                         if (voterElem.uuid == voterData.uuid) {
                             if (voterData.hasOwnProperty('points_vote')) {

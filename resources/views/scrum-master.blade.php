@@ -50,16 +50,7 @@
             </div>
         </div>
     </div>
-    <div id="app">
-        <div class="container scrum-master-vote">
-            <scrum :scrum-data="{{ $scrum_data }}" scrum-url="{{ $scrum_url }}" scrum-name="{{ $scrum_name }}"></scrum>
-        </div>
-        <div class="container scrum-controls">
-            <div id="scrum-controls" class="row">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-6">
-                    <scrum-controls @if ( ! $scrum_started) started @endif @if ($round_open) round-open @endif></scrum-controls>
-                </div>
-            </div>
-        </div>
+    <div id="app" class="fill-height">
+        <scrum scrum-master :scrum-data="{{ $scrum_data }}" scrum-url="{{ $scrum_url }}" scrum-name="{{ $scrum_name }}"></scrum>
     </div>
 @endsection

@@ -1,17 +1,17 @@
 <template>
-    <div class="voter-chip-grp" :class="{ 'voter-status': showStatus, 'voter-success': hasVoted, 'voter-default': ! hasVoted }">
-        <div class="voter-chip">{{ voterName }}</div>
+    <div class="voter-chip-grp" :class="{ 'voter-status': showStatus, 'voter-success': voted, 'voter-default': ! voted }">
+        <div class="voter-chip">{{ name }}</div>
         <div class="voter-chip">
-            <div class="voter-chip-status" v-show="(roundOpen && ! canShowPoints && ! hasVoted)">
+            <div class="voter-chip-status" v-show="(roundOpen && ! voted)">
                 <i class="fa fa-fw fa-spinner fa-spin"></i>
             </div>
-            <div class="voter-chip-status" v-show="(roundOpen && ! canShowPoints && hasVoted)">
+            <div class="voter-chip-status" v-show="(roundOpen && voted && points == null)">
                 <i class="fa fa-fw fa-check"></i>
             </div>
-            <div class="voter-chip-status" v-show="(canShowPoints)">
-                {{ pointsVoted }}
+            <div class="voter-chip-status" v-show="points != null">
+                {{ points }}
             </div>
-            <div class="voter-chip-status" v-show="( ! roundOpen && ! canShowPoints)">
+            <div class="voter-chip-status" v-show="( ! roundOpen && ! voted)">
                 <i class="fa fa-fw fa-times"></i>
             </div>
         </div>
@@ -44,18 +44,6 @@
             'roundOpen': {
                 default: false,
                 type: Boolean
-            }
-        },
-        data() {
-            return {
-                'voterName': this.name,
-                'hasVoted': this.voted,
-                'pointsVoted': this.points
-            }
-        },
-        computed: {
-            canShowPoints() {
-                return (this.pointsVoted != null);
             }
         }
     };

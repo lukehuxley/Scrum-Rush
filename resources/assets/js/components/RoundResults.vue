@@ -9,20 +9,9 @@
                 required: true,
                 type: Array
             },
-            roundOpen: {
-                required: true,
-                type: Boolean
-            },
             availablePoints: {
                 type: Array,
                 default: [0,1,2,3,5,8,13,21,34]
-            }
-        },
-        data() {
-            return {
-                showRoundResults: this.roundOpen,
-                scale: this.availablePoints,
-                voters: this.voterData
             }
         },
         computed: {
@@ -31,9 +20,9 @@
                 var voterCount = 0;
                 var voteSum = 0;
 
-                for (var voter = 0; voter < this.voters.length; voter++) {
-                    if (this.voters[voter].points_vote != null) {
-                        voteSum += this.voters[voter].points_vote;
+                for (var voter = 0; voter < this.voterData.length; voter++) {
+                    if (this.voterData[voter].points_vote != null) {
+                        voteSum += this.voterData[voter].points_vote;
                         voterCount++;
                     }
                 }
