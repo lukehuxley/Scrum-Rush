@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             @if (isset($menu))
-                <button type="button" class="btn btn-sm navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+                <button type="button" class="btn btn-primary btn-sm navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
                     <i class="fa fa-bars"></i> Menu
                 </button>
             @endif
