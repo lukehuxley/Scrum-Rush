@@ -23,16 +23,6 @@ class CreateVotersTable extends Migration
             // Voter name
             $table->string('name', 1024);
 
-            // Scrum
-            $table->integer('scrum_id')->nullable()->unsigned()->index();
-            $table->foreign('scrum_id')->references('id')->on('scrums')->onDelete('cascade');;
-
-            // Points vote
-            $table->integer('points_vote')->nullable();
-
-            // Priority vote
-            $table->integer('priority_vote')->nullable();
-
             // Session ID
             $table->string('session_id', 41);
 

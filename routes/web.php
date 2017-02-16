@@ -15,16 +15,17 @@ Route::get('/', 'WelcomeController@index');
 
 Route::post('/create-scrum', 'ScrumMaster@createScrum');
 
-Route::group(['middleware' => 'verify_scrum_master'], function () {
-    Route::get('/scrum-master', 'ScrumMaster@index');
-    Route::get('/scrum-master/end-scrum', 'ScrumMaster@endScrum');
-});
+Route::group(['middleware' => ['verify_scrum']], function () {
 
-Route::group(['middleware' => 'verify_scrum_voter'], function () {
-    Route::post('/scrum/vote', 'ScrumVoter@submitVote');
-    Route::get('/scrum', 'ScrumVoter@index');
-    Route::get('/scrum/leave', 'ScrumVoter@leaveScrum');
-});
+    Route::group(['middleware' => ['verify_scrum_master']], function () {
+        Route::get('/{uuid}/end-scrum', 'ScrumMaster@endScrum');
+    });
 
-Route::get('/scrum/{uuid}', 'ScrumVoter@joinScrumForm');
-Route::post('/scrum/{uuid}', 'ScrumVoter@joinScrum');
+    Route::group(['middleware' => ['verify_scrum_voter']], function () {
+        Route::get('/{uuid}/leave-scrum', 'ScrumVoter@leaveScrum');
+    });
+
+    Route::post('/{uuid}/join-scrum', 'ScrumVoter@joinScrum');
+    Route::get('/{uuid}', 'ScrumVoter@showScrum');
+
+});

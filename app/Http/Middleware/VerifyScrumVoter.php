@@ -17,10 +17,17 @@ class VerifyScrumVoter
     public function handle($request, Closure $next)
     {
         $session_id = $request->session()->getId();
-        $voters = Voter::where('session_id', $session_id);
+        $voter = Voter::where('session_id', $session_id)->first();
 
-        if ($voters->count() == 0)
-            return redirect('/');
+        // Is this session ID associated to a voter
+        if ( ! $voter) {
+
+            // If request is for API data return false
+            if (in_array('api', $request->route()->middleware()))
+                return response()->json(false);
+
+            return redirect('/')->withErrors('Session does not exist or session has expired');
+        }
 
         return $next($request);
     }

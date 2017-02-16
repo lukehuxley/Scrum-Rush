@@ -14,13 +14,17 @@
             };
         },
         props: {
-            'availablePoints': {
+            availablePoints: {
                 type: Array,
                 default: [0,1,2,3,5,8,13,21,34]
             },
-            'vote': {
+            vote: {
                 default: null,
                 type: Number
+            },
+            scrumUuid: {
+                required: true,
+                type: String
             }
         },
         watch: {
@@ -39,7 +43,7 @@
 
                 this.highlightButton(points);
 
-                $.post('/api/scrum/vote-points', {points: points} , function (response) {
+                $.post('/api/' + this.scrumUuid + '/vote-points', {points: points} , function (response) {
                     this.highlightButton(response.request_response);
                     this.$emit('scrum-status-update', response.scrum_status);
                 }.bind(this), 'json');

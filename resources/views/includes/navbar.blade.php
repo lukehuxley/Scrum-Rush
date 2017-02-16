@@ -6,7 +6,7 @@
                     <i class="fa fa-bars"></i> Menu
                 </button>
             @endif
-            <span class="navbar-brand">{{ $title }}</span>
+            <a class="navbar-brand" href="/">{{ $title }}</a>
         </div>
         @if (isset($menu))
         <div class="navbar-collapse collapse" id="navbar-collapse-1" aria-expanded="false" style="height: 1px;">

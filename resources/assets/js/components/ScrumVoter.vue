@@ -1,5 +1,5 @@
 <template>
-    <div class="voter-chip-grp" :class="{ 'voter-status': showStatus, 'voter-success': voted, 'voter-default': ! voted }">
+    <div class="voter-chip-grp" :class="{ 'voter-primary': ! inactive && ! voted, 'voter-status': showStatus, 'voter-success': voted, 'voter-default': inactive && ! voted }">
         <div class="voter-chip">{{ name }}</div>
         <div class="voter-chip">
             <div class="voter-chip-status" v-show="(roundOpen && ! voted)">
@@ -38,6 +38,10 @@
                 default: false
             },
             'showStatus': {
+                default: false,
+                type: Boolean
+            },
+            'inactive': {
                 default: false,
                 type: Boolean
             },

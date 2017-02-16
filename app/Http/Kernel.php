@@ -59,6 +59,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verify_scrum_master' => \App\Http\Middleware\VerifyScrumMaster::class,
-        'verify_scrum_voter' => \App\Http\Middleware\VerifyScrumVoter::class
+        'verify_scrum_voter' => \App\Http\Middleware\VerifyScrumVoter::class,
+        'verify_scrum' => \App\Http\Middleware\VerifyScrum::class
     ];
 }

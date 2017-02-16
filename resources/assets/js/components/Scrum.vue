@@ -3,7 +3,7 @@
     <div class="flex flex-col fill-height">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 flex flex-grow">
 
-            <div v-show=" ! scrumStatus.scrum_started">
+            <div v-show=" ! scrumStatus.scrum_started" class="flex flex-col fill-width">
                 <div class="panel panel-primary">
                     <div class="panel-heading">Invite Voters</div>
                     <div class="panel-body">
@@ -30,7 +30,7 @@
                         <div class="panel-heading flex flex-shrink">Your Vote</div>
                         <div class="panel-body flex flex-grow">
                             <div class="flex flex-grow flex-col">
-                                <vote-buttons @scrum-status-update="overrideStatusRefreshUpdate" :availablePoints="scrumData.scale" :vote="scrumStatus.vote"></vote-buttons>
+                                <vote-buttons @scrum-status-update="overrideStatusRefreshUpdate" :availablePoints="scrumData.scale" :vote="scrumStatus.vote" :scrum-uuid="scrumUuid"></vote-buttons>
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
         </div>
         <div v-show="scrumMaster" class="col-xs-12 col-sm-5 col-sm-offset-6 col-md-4 col-md-offset-6 col-lg-3 col-lg-offset-6 flex flex-shrink">
             <div class="fill-width fill-height">
-                <scrum-controls @scrum-status-update="overrideStatusRefreshUpdate" :started="scrumStatus.scrum_started" :round-open="scrumStatus.round_open"></scrum-controls>
+                <scrum-controls @scrum-status-update="overrideStatusRefreshUpdate" :started="scrumStatus.scrum_started" :round-open="scrumStatus.round_open" :scrum-uuid="scrumUuid"></scrum-controls>
             </div>
         </div>
     </div>
@@ -71,26 +71,31 @@
 <script>
     export default {
         props: {
-            'scrumData': {
+            scrumData: {
                 required: true,
                 type: Object
             },
-            'scrumUrl': {
+            scrumRushUrl: {
                 required: true,
                 type: String
             },
-            'scrumName': {
+            scrumUuid: {
                 required: true,
                 type: String
             },
-            'scrumMaster': {
+            scrumName: {
+                required: true,
+                type: String
+            },
+            scrumMaster: {
                 type: Boolean
             },
         },
         data() {
             return {
                 skipStatusRefreshUpdate: false,
-                scrumStatus: this.scrumData
+                scrumStatus: this.scrumData,
+                scrumUrl: this.scrumRushUrl + this.scrumUuid
             }
         },
         created() {
@@ -102,7 +107,7 @@
                 this.skipStatusRefreshUpdate = true;
             },
             statusRefresh() {
-                this.ajax = $.getJSON('/api/scrum/status', function (data) {
+                this.ajax = $.getJSON('/api/' + this.scrumUuid + '/status', function (data) {
 
                     if (data == false)
                         document.location.reload();

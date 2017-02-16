@@ -1,6 +1,6 @@
 <template>
     <div id="voters">
-        <scrum-voter v-for="voter in voterData" :round-open="roundOpen" :name="voter.name" :show-status="showStatus" :points="voter.points_vote" :voted="voter.voted" :uuid="voter.uuid"></scrum-voter>
+        <scrum-voter v-for="voter in voterData" :inactive="voter.inactive" :round-open="roundOpen" :name="voter.name" :show-status="showStatus" :points="voter.points_vote" :voted="voter.voted" :uuid="voter.uuid"></scrum-voter>
     </div>
 </template>
 

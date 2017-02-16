@@ -5,24 +5,40 @@ namespace App\Http\Controllers;
 use App\Scrum;
 use App\Voter;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\Uuid;
 
 class WelcomeController extends Controller
 {
     public function index(Request $request)
     {
-        $session_id = $request->session()->getId();
-        $scrum = Scrum::where('session_id', $session_id);
+        $voter = Voter::where('session_id', $request->session()->getId())->first();
+        if ($voter)
+        {
+            $voter_scrums = [];
+            $other_scrums = [];
 
-        if ($scrum->count() > 0)
-            return redirect('/scrum-master');
+            $scrums = Scrum::where('updated_at', '>', \Carbon\Carbon::now()->subMinutes(30))->get();
+            foreach($scrums as $scrum) {
+                $voter_in_scrum = false;
+                foreach($scrum->voters as $scrum_voter)
+                {
+                    if ($scrum_voter->id == $voter->id)
+                    {
+                        $voter_in_scrum = true;
+                        $voter_scrums[] = $scrum;
+                        break;
+                    }
+                }
+                if ( ! $voter_in_scrum) {
+                    if ($scrum->public)
+                        $other_scrums[] = $scrum;
+                }
+            }
+        } else {
+            $voter_scrums = [];
+            $other_scrums = Scrum::where('public', true)->where('updated_at', '>', \Carbon\Carbon::now()->subMinutes(5))->get();
+        }
 
-        $voter = Voter::where('session_id', $session_id);
-
-        if ($voter->count() > 0)
-            return redirect('/scrum');
-
-        return view('welcome');
+        return view('welcome', compact('voter_scrums', 'other_scrums'));
     }
 
 }

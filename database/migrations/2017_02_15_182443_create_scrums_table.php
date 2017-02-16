@@ -21,7 +21,8 @@ class CreateScrumsTable extends Migration
             $table->string('name', 1024);
 
             // Scrum master
-            $table->string('scrum_master', 1024);
+            $table->integer('voter_id')->nullable()->unsigned()->index();
+            $table->foreign('voter_id')->references('id')->on('voters')->onDelete('cascade');;
 
             // UUID
             $table->string('uuid', 37);
@@ -29,12 +30,13 @@ class CreateScrumsTable extends Migration
             // Started
             $table->boolean('started')->default(false);
 
+            // Public
+            $table->boolean('public')->default(false);
+
             // Round open
             $table->boolean('round_open')->default(false);
 
-            // Session ID
-            $table->string('session_id', 41);
-
+            $table->softDeletes();
             $table->timestamps();
         });
 

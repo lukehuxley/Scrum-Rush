@@ -13,76 +13,108 @@ class ScrumMaster extends Controller
     public function createScrum(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|max:1024',
-            'scrum_master' => 'required|max:1024',
+            'scrum_name' => 'required|max:1024',
+            'scrum_master_name' => 'required|max:1024',
         ]);
 
+        // Identify the session
         $session_id = $request->session()->getId();
 
+        // Match session to voter if exists
+        $voter = Voter::where('session_id', $request->session()->getId())->first();
+
+        if ($voter)
+        {
+            // If the voter already exists
+
+            // Set the voters name to the one provided
+            $voter->name = $request->scrum_master_name;
+
+        } else {
+            // If the voter doesn't already exist
+
+            // Create a new voter who will become the scrum master
+            $voter = new Voter([
+                'name' => $request->scrum_master_name,
+                'session_id' => $session_id,
+                'uuid' => Uuid::uuid4()->toString()
+            ]);
+
+        }
+
+        // Save the voter
+        $voter->save();
+
+        // Create the scrum, setting this voter as the scrum master
         $scrum = new Scrum([
-            'name' => $request->name,
-            'scrum_master' => $request->scrum_master,
+            'name' => $request->scrum_name,
             'uuid' => Uuid::uuid4()->toString(),
-            'session_id' => $session_id
+            'voter_id' => $voter->id,
+            'public' => ($request->private == 'on') ? false : true
         ]);
+
+        // Save the scrum
         $scrum->save();
 
-        // Create a new voter
-        $voter = new Voter([
-            'name' => $request->scrum_master,
-            'session_id' => $session_id,
-            'uuid' => Uuid::uuid4()->toString(),
-        ]);
-        $voter->join_scrum($scrum->id);
+        // Attach the voter to the scrum (as well as setting scrum master)
+        $scrum->voters()->attach($voter);
 
-        session(['scrum' => $scrum->id]);
-
-        return redirect('/scrum-master');
+        return redirect('/'.$scrum->uuid);
     }
 
-    public function endScrum(Request $request)
+    public function endScrum(Request $request, $uuid)
     {
-        $scrums = Scrum::where('session_id', $request->session()->getId());
-        if ($scrums->count() == 0)
-            return redirect('/');
-        $scrum = $scrums->first();
+        $scrum = Scrum::where('uuid', $uuid)->first();
+
         $scrum_name = $scrum->name;
-        $scrum->end();
+        $scrum->delete();
+
         return redirect('/')->with('status', 'Ended the '.$scrum_name.' scrum');
     }
 
-    public function index(Request $request)
+    public function startScrum(Request $request, $uuid)
     {
-        $scrum = Scrum::where('session_id', $request->session()->getId())->first();
+        $scrum = Scrum::where('uuid', $uuid)->first();
         $voter = Voter::where('session_id', $request->session()->getId())->first();
 
-        $protocol = ( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $domain_name = $_SERVER['HTTP_HOST'].'/';
+        $scrum->started = true;
+        $scrum->round_open = true;
+        $scrum->save();
 
-        $scrum_url = $protocol.$domain_name.'scrum/'.$scrum->uuid;
-        $scrum_master = $scrum->scrum_master;
-        $scrum_name = $scrum->name;
-        $scrum_started = $scrum->started;
+        return response()->json([
+            'scrum_status' => $scrum->status($voter)
+        ]);
+    }
 
-        $round_open = $scrum->round_open;
-        $vote = $voter->points_vote;
+    public function startNewRound(Request $request, $uuid)
+    {
+        $scrum = Scrum::where('uuid', $uuid)->first();
+        $voter = Voter::where('session_id', $request->session()->getId())->first();
 
-        $voters_model = $scrum->voters()->get();
-        $scale = [0,1,2,3,5,8,13,21,34];
-
-        $voters = [];
-        foreach ($voters_model as $voter)
+        foreach ($scrum->voters()->get() as $voter)
         {
-            $voters[] = [
-                'name' => $voter->name,
-                'voted' => ($voter->points_vote !== null) ? true : false,
-                'points_vote' => $voter->points_vote,
-                'uuid' => $voter->uuid,
-            ];
+            $voter->pivot->points_vote = null;
+            $voter->pivot->save();
         }
-        $scrum_data = json_encode(compact('round_open', 'vote', 'voters', 'scale', 'scrum_started'));
+        $scrum->round_open = true;
+        $scrum->save();
 
-        return view('scrum-master', compact('scrum_url', 'scrum_name', 'scrum_master', 'scrum_started', 'round_open', 'scrum_data'));
+        return response()->json([
+            'scrum_status' => $scrum->status($voter)
+        ]);
+    }
+
+    public function endRound(Request $request, $uuid)
+    {
+        $scrum = Scrum::where('uuid', $uuid)->first();
+        $voter = Voter::where('session_id', $request->session()->getId())->first();
+
+        $scrum->round_open = false;
+        $scrum->save();
+
+        return response()->json([
+            'scrum_status' => $scrum->status($voter)
+        ]);
     }
 
 }

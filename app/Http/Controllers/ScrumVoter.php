@@ -10,132 +10,122 @@ use Ramsey\Uuid\Uuid;
 class ScrumVoter extends Controller
 {
 
-    public function joinScrumForm(Request $request, $uuid)
+    public function showScrum(Request $request, $uuid)
     {
+        $scrum = Scrum::where('uuid', $uuid)->first();
+        $voter = $scrum->voters()->where('session_id', $request->session()->getId())->first();
 
-        // If the scrum does not exist redirect the user
-        $scrums = Scrum::where('uuid', $uuid);
-        if ($scrums->count() == 0)
-            return redirect('/');
+        // Scrum URL
+        $protocol = ( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $domain_name = $_SERVER['HTTP_HOST'].'/';
+        $scrum_rush_url = $protocol.$domain_name;
+        $scrum_uuid = $scrum->uuid;
 
-        $voter_name = '';
-
-        // Get the name of the scrum
-        $scrum = $scrums->first();
-        $scrum_name = $scrum->name;
-
-        // If this session is already in another scrum
-        $voters = Voter::where('session_id', $request->session()->getId());
-        if ($voters->count() > 0)
+        // If the voter does not belong to this scrum
+        if ( ! $voter)
         {
-            // Get the voter's name
-            $voter = $voters->first();
-            $voter_name = $voter->name;
+            // Load the voter if the session ID already exists in database
+            $voter = Voter::where('session_id', $request->session()->getId())->first();
+
+            // Set the name to the voter name or blank if new voter
+            $voter_name = ($voter) ? $voter->name : '';
+
+            // Get the name of the scrum
+            $scrum_name = $scrum->name;
+
+            return view('join-scrum', compact('voter_name', 'scrum_rush_url', 'scrum_uuid', 'scrum_name'));
         }
 
-        return view('join-scrum', compact('voter_name', 'scrum_name'));
+        $scrum_master = ($scrum->voter_id == $voter->id) ? true : false;
+        $scrum_name = $scrum->name;
+        $voter_name = $voter->name;
+
+        $scrum_data = json_encode($scrum->status($voter));
+
+        return view(($scrum_master) ? 'scrum-master' : 'scrum-voter', compact('scrum_name', 'voter_name', 'scrum_data', 'scrum_rush_url', 'scrum_uuid'));
 
     }
 
     public function joinScrum(Request $request, $uuid)
     {
+        $scrum = Scrum::where('uuid', $uuid)->first();
+        $voter = Voter::where('session_id', $request->session()->getId())->first();
+
         $this->validate($request, [
             'voter_name' => 'required|max:1024'
         ]);
 
-        // If the scrum does not exist redirect the user
-        $scrums = Scrum::where('uuid', $uuid);
-        if ($scrums->count() == 0)
-            return redirect('/');
-
-        // If this session is already in another scrum
-        $voters = Voter::where('session_id', $request->session()->getId());
-        if ($voters->count() > 0)
+        // If the voter doesn't already exist, create one
+        if ( ! $voter)
         {
-            // Delete the voter, removing from their current scrum
-            $voter = $voters->first();
-            $voter->leave_scrum();
-        } else {
             $voter = new Voter([
                 'session_id' => $request->session()->getId(),
-                'uuid' => Uuid::uuid4()->toString()
+                'uuid' => Uuid::uuid4()->toString(),
             ]);
         }
-
-        // Get the scrum
-        $scrum = $scrums->first();
 
         // Set voter name
         $voter->name = $request->voter_name;
 
+        // Save voter
+        $voter->save();
+
         // Join the scrum
-        $voter->join_scrum($scrum->id);
+        $scrum->voters()->attach($voter);
 
-        return redirect('/scrum');
-
-    }
-
-    public function leaveScrum(Request $request)
-    {
-
-        $voters = Voter::where('session_id', $request->session()->getId());
-        if ($voters->count() > 0)
-        {
-            // Delete the voter, removing from their current scrum
-            $voter = $voters->first();
-            $voter->leave_scrum();
-        }
-
-        return redirect('/');
+        return redirect('/'.$uuid);
 
     }
 
-    public function index(Request $request)
+    public function leaveScrum(Request $request, $uuid)
     {
-        $voter = Voter::where('session_id', $request->session()->getId())->first();
-        $scrum = $voter->scrum();
+        $scrum = Scrum::where('uuid', $uuid)->first();
+        $voter = $scrum->voters()->where('session_id', $request->session()->getId())->first();
 
-        if ($scrum->count() == 0)
+        // The scrum master can not leave the scrum
+        if ($scrum->voter_id == $voter->id)
+            return redirect()->back()->withErrors('You can not leave the scrum because you are scrum master');
+
+        // Detach voter from scrum
+        $scrum->voters()->detach($voter);
+
+        return redirect('/')->with(['status' => 'You have left scrum '.$scrum->name]);
+    }
+
+    public function getScrumStatus(Request $request, $uuid)
+    {
+        $scrum = Scrum::where('uuid', $uuid)->first();
+        $voter = $scrum->voters()->where('session_id', $request->session()->getId())->first();
+
+        if ($scrum->voter_id == $voter->id)
         {
-            $voter->leave_scrum();
-            return redirect('/');
+            $scrum->setUpdatedAt($scrum->freshTimestamp());
+            $scrum->save();
         }
 
-        $scrum = $scrum->first();
+        $voter->setUpdatedAt($voter->freshTimestamp());
+        $voter->save();
 
-        $protocol = ( ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $domain_name = $_SERVER['HTTP_HOST'].'/';
+        return response()->json($scrum->status($voter));
+    }
 
-        $scrum_url = $protocol.$domain_name.'scrum/'.$scrum->uuid;
-        $scrum_name = $scrum->name;
-        $vote = $voter->points_vote;
-        $voter_name = $voter->name;
-        $round_open = $scrum->round_open;
-        $scrum_started = $scrum->started;
+    public function submitPointsVote(Request $request, $uuid)
+    {
+        $scrum = Scrum::where('uuid', $uuid)->first();
+        $voter = $scrum->voters()->where('session_id', $request->session()->getId())->first();
 
-        $voters_model = $scrum->voters()->get();
-
-        $voters = [];
-        $scale = [0,1,2,3,5,8,13,21,34];
-
-        foreach ($voters_model as $voter)
-        {
-            if ($scrum->round_open)
-                $points_vote = null;
+        if ($scrum->started && $scrum->round_open) {
+            if ($request->points == $voter->pivot->points_vote)
+                $voter->pivot->points_vote = null;
             else
-                $points_vote = $voter->points_vote;
-
-            $voters[] = [
-                'name' => $voter->name,
-                'points_vote' => $points_vote,
-                'voted' => ($voter->points_vote !== null) ? true : false,
-                'uuid' => $voter->uuid
-            ];
+                $voter->pivot->points_vote = $request->points;
         }
+        $voter->pivot->save();
 
-        $scrum_data = json_encode(compact('round_open', 'vote', 'voters', 'scale', 'scrum_started'));
-
-        return view('scrum-voter', compact('scrum_name', 'voter_name', 'scrum_data', 'scrum_url'));
+        return response()->json([
+            'request_response' => $voter->pivot->points_vote,
+            'scrum_status' => $scrum->status($voter)
+        ]);
     }
 
 }

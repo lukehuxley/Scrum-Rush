@@ -15,25 +15,29 @@
             roundOpen: {
                 type: Boolean
             },
+            scrumUuid: {
+                required: true,
+                type: String
+            },
         },
         methods: {
             startScrum() {
 
-                $.post('/api/scrum-master/start-scrum', {}, function (response) {
+                $.post('/api/' + this.scrumUuid + '/start-scrum', {}, function (response) {
                     this.$emit('scrum-status-update', response.scrum_status);
                 }.bind(this), 'json');
 
             },
             endRound() {
 
-                $.post('/api/scrum-master/end-round', {}, function (response) {
+                $.post('/api/' + this.scrumUuid + '/end-round', {}, function (response) {
                     this.$emit('scrum-status-update', response.scrum_status);
                 }.bind(this), 'json');
 
             },
             startRound() {
 
-                $.post('/api/scrum-master/start-new-round', {}, function (response) {
+                $.post('/api/' + this.scrumUuid + '/start-new-round', {}, function (response) {
                     this.$emit('scrum-status-update', response.scrum_status);
                 }.bind(this), 'json');
 

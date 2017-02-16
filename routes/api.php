@@ -13,15 +13,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/scrum/status', 'Api@getScrumStatus');
+Route::group(['middleware' => ['verify_scrum', 'verify_scrum_voter']], function () {
 
-Route::group(['middleware' => 'verify_scrum_voter'], function () {
-    Route::post('/scrum/vote-points', 'Api@submitPointsVote');
-    Route::post('/scrum/vote-priority', 'Api@submitPriorityVote');
-});
+    Route::get('/{uuid}/status', 'ScrumVoter@getScrumStatus');
+    Route::post('/{uuid}/vote-points', 'ScrumVoter@submitPointsVote');
 
-Route::group(['middleware' => 'verify_scrum_master'], function () {
-    Route::post('/scrum-master/start-scrum', 'Api@startScrum');
-    Route::post('/scrum-master/start-new-round', 'Api@startNewRound');
-    Route::post('/scrum-master/end-round', 'Api@endRound');
+    Route::group(['middleware' => 'verify_scrum_master'], function () {
+        Route::post('/{uuid}/start-scrum', 'ScrumMaster@startScrum');
+        Route::post('/{uuid}/start-new-round', 'ScrumMaster@startNewRound');
+        Route::post('/{uuid}/end-round', 'ScrumMaster@endRound');
+    });
+
 });
