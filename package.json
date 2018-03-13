@@ -1,0 +1,22 @@
+{
+  "name": "scrum-rush-api",
+  "version": "2.0.0",
+  "description": "Scrum Rush API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukehuxley/Scrum-Rush.git"
+  },
+  "author": "Luke Huxley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukehuxley/Scrum-Rush/issues"
+  },
+  "homepage": "https://github.com/lukehuxley/Scrum-Rush#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
